@@ -24,7 +24,8 @@ image_directory = image_directory.replace("%20"," ")
 #st.write(image_directory)
 
 # Finding image path. To be replaced with server directiory
-image_path = '../new_jpg_data/' + image_directory
+image_path = '/home/user/hdia/abhitrivedi/BoundaryNet/new_jpg_data' + image_directory
+print(image_path)
 
 # Sidebar elements
 st.sidebar.title('Select Image')
