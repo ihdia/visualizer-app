@@ -30,10 +30,26 @@ image_path = '../new_jpg_data/' + image_directory
 st.sidebar.title('Select Image')
 image_selector = st.sidebar.radio('Image Type', ['Train', 'Test', 'Validation'])
 
-analyze_button = st.sidebar.button('Analyze')
+# analyze_button = st.sidebar.button('Analyze')
 
-if(analyze_button):
-    result.app(image_selector)
-else:
-    #st.write('App')
-    image_list.app(image_path,info)
+# if(analyze_button):
+#     result.app(image_selector)
+# else:
+#     #st.write('App')
+
+
+
+
+
+st.title('Image list')
+    # st.image(image)
+
+c1,c2 = st.beta_columns(2)
+
+gt_pts = c1.checkbox("GT-points")
+gt_mask = c1.checkbox("GT-mask")
+
+fig,label = image_list.app(image_path,info,gt_pts,gt_mask)
+
+c2.write(label)
+c2.plotly_chart(fig)
