@@ -16,8 +16,6 @@ with open('../raw/train_val/combined_val_converted.json', 'r') as f:
     train_val_data = json.load(f)
 
 
-
-
 def update_image_info(value):
 
     if(value == 'Train'):
@@ -52,7 +50,6 @@ info, image_path = update_image_info(image_selector)
 
 if(info != 'null'):
     st.title('Image list')
-    print('INFO IS ', info)
     c1,c2 = st.beta_columns(2)
     
     gt_pts = c1.checkbox("GT-points")
@@ -62,5 +59,12 @@ if(info != 'null'):
     
     c2.write(label)
     c2.plotly_chart(fig)
+
+    with st.beta_container():
+        col1, col2 = st.beta_columns(2)
+        col1.button('Prev')
+        col2.button('Next')
+
+
 if(info == 'null'):
     st.title('Select an option')
