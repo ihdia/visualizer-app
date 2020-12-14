@@ -24,10 +24,10 @@ def filter_json(value, session_state):
         data = train_data
     elif(value == 'Test'):
         data = test_data
-        session_state.counter = 20
     elif(value == 'Validation'):
         data = train_val_data
     else:
+        session_state.counter = 20
         return 'null', 'null'
 
 
@@ -45,8 +45,7 @@ def update_image_info(data):
         # Picking a random image from data, extracting location
         image_directory = data[counter]['image_url'][22:]
         image_directory = image_directory.replace("%20"," ")
-        
-        
+
         # Finding image path. To be replaced with server directiory
         image_path = '../new_jpg_data' + image_directory
         print(image_path)
