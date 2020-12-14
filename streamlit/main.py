@@ -7,13 +7,13 @@ import numpy as np
 import json
 
 # Loading jsons, directories need to be replaced aptly
-with open('/home/bala/Desktop/iiith/visualizer-app/raw/test/combined_test_converted.json', 'r') as f:
+with open('../raw/test/combined_test_converted.json', 'r') as f:
     test_data = json.load(f)
 
-with open('/home/bala/Desktop/iiith/visualizer-app/raw/train/combined_train_converted.json', 'r') as f:
+with open('../raw/train/combined_train_converted.json', 'r') as f:
     train_data = json.load(f)
 
-with open('/home/bala/Desktop/iiith/visualizer-app/raw/train_val/combined_val_converted.json', 'r') as f:
+with open('../raw/train_val/combined_val_converted.json', 'r') as f:
     train_val_data = json.load(f)
 
 session_state = SessionState.get(name='', counter=None)
@@ -48,7 +48,7 @@ def update_image_info(data):
         
         
         # Finding image path. To be replaced with server directiory
-        image_path = '/home/bala/Desktop/iiith/visualizer-app/new_jpg_data' + image_directory
+        image_path = '../new_jpg_data' + image_directory
         print(image_path)
     else:
         return 'null', 'null'
