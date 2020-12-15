@@ -71,15 +71,24 @@ def update_image_info(data):
 st.sidebar.title('Select Image')
 image_selector = st.sidebar.radio('Image Type', ['None', 'Train', 'Test', 'Validation'])
 component_selector = st.sidebar.selectbox(
-    'Select component type: ',
+    'Select component type ',
     ('Character Component','Page Boundary','Character Line Segment','Boundary Line','Physical Degradation',
     'Library Marker','Picture / Decorator')
 )
 
 
-if st.sidebar.button('Prev'):
+# if st.sidebar.button('Prev'):
+#     session_state.counter -= 1
+# if st.sidebar.button('Next'):
+#     session_state.counter += 1
+
+c1,c2 = st.sidebar.beta_columns(2)
+p = c1.button('Prev')
+n = c2.button('Next')
+
+if p:
     session_state.counter -= 1
-if st.sidebar.button('Next'):
+if n:
     session_state.counter += 1
 
 json_selected = filter_json(image_selector, session_state)
@@ -94,16 +103,17 @@ else:
 
 
     if(info != 'null' and os.path.exists(image_path)):
-        st.title('Image list')
-        c1,c2 = st.beta_columns(2)
+        # st.title('Image list')
+        # c1,c2 = st.beta_columns(2)
         
-        gt_pts = c1.checkbox("GT-points")
-        gt_mask = c1.checkbox("GT-mask")
+        st.sidebar.write('\nSelect outputs to show')
+        gt_pts = st.sidebar.checkbox("GT-points")
+        gt_mask = st.sidebar.checkbox("GT-mask")
 
         fig,label = image_list.app(image_path,info,gt_pts,gt_mask)
         
-        c2.write(label)
-        c2.plotly_chart(fig)
+        st.write(label)
+        st.plotly_chart(fig)
 
     else:
         st.title('Image not found')
