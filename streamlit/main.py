@@ -5,6 +5,7 @@ import SessionState
 import streamlit as st
 import numpy as np
 import json
+import os
 
 # Loading jsons, directories need to be replaced aptly
 with open('../raw/test/combined_test_converted.json', 'r') as f:
@@ -27,8 +28,8 @@ def filter_json(value, session_state):
     elif(value == 'Validation'):
         data = train_val_data
     else:
-        session_state.counter = 20
-        return 'null', 'null'
+        session_state.counter = 1
+        return 'null'
 
     return data
 
@@ -37,7 +38,6 @@ def filter_component(value,data,session_state):
 
     for i in range(len(data)):
         if data[i]['label'] == value:
-            print(value)
             new_data.append(data[i])
     
     return new_data
@@ -49,7 +49,7 @@ def update_image_info(data):
     counter = session_state.counter
 
 
-    if(counter > 0):
+    if(counter > 0 and len(data) > counter):
         info = data[counter]
         
         # Picking a random image from data, extracting location
@@ -83,24 +83,31 @@ if st.sidebar.button('Next'):
     session_state.counter += 1
 
 json_selected = filter_json(image_selector, session_state)
-json_selected = filter_component(component_selector,json_selected,session_state)
 
-info, image_path = update_image_info(json_selected)
-
-
-if(info != 'null'):
-    st.title('Image list')
-    c1,c2 = st.beta_columns(2)
-    
-    gt_pts = c1.checkbox("GT-points")
-    gt_mask = c1.checkbox("GT-mask")
-
-    fig,label = image_list.app(image_path,info,gt_pts,gt_mask)
-    
-    c2.write(label)
-    c2.plotly_chart(fig)
-
-
-
-if(info == 'null'):
+if json_selected == 'null':
     st.title('Select an option')
+
+else:
+    json_selected = filter_component(component_selector,json_selected,session_state)
+
+    info, image_path = update_image_info(json_selected)
+
+
+    if(info != 'null' and os.path.exists(image_path)):
+        st.title('Image list')
+        c1,c2 = st.beta_columns(2)
+        
+        gt_pts = c1.checkbox("GT-points")
+        gt_mask = c1.checkbox("GT-mask")
+
+        fig,label = image_list.app(image_path,info,gt_pts,gt_mask)
+        
+        c2.write(label)
+        c2.plotly_chart(fig)
+
+    else:
+        st.title('Image not found')
+
+
+    if(info == 'null'):
+        st.title('Select an option')
