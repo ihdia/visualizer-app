@@ -102,7 +102,7 @@ else:
     info, image_path = update_image_info(json_selected)
 
 
-    if(info != 'null' and os.path.exists(image_path)):
+    if(info != 'null'):
         # st.title('Image list')
         # c1,c2 = st.beta_columns(2)
         
