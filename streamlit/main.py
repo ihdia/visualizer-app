@@ -30,9 +30,19 @@ def filter_json(value, session_state):
         session_state.counter = 20
         return 'null', 'null'
 
-
-
     return data
+
+def filter_component(value,data,session_state):
+    new_data = []
+
+    for i in range(len(data)):
+        if data[i]['label'] == value:
+            print(value)
+            new_data.append(data[i])
+    
+    return new_data
+
+
 
 def update_image_info(data):
 
@@ -60,6 +70,11 @@ def update_image_info(data):
 # Sidebar elements
 st.sidebar.title('Select Image')
 image_selector = st.sidebar.radio('Image Type', ['None', 'Train', 'Test', 'Validation'])
+component_selector = st.sidebar.selectbox(
+    'Select component type: ',
+    ('Character Component','Page Boundary','Character Line Segment','Boundary Line','Physical Degradation',
+    'Library Marker','Picture / Decorator')
+)
 
 
 if st.sidebar.button('Prev'):
@@ -68,6 +83,7 @@ if st.sidebar.button('Next'):
     session_state.counter += 1
 
 json_selected = filter_json(image_selector, session_state)
+json_selected = filter_component(component_selector,json_selected,session_state)
 
 info, image_path = update_image_info(json_selected)
 
