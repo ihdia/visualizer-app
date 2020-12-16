@@ -8,9 +8,9 @@ def app(image_path,info,gt_pts,gt_mask):
     image = cv.imread(image_path)
     
     label = info['label']
-    comp = info['components'][0]
-    bbox = comp['bbox']
-    pts = np.array(comp['poly'],dtype='int32')
+    # comp = info['components'][0]
+    bbox = info['bbox'][0]
+    pts = np.array(info['poly'][0],dtype='int32')
 
     x0 = max(int(bbox[0]),0)
     y0 = max(int(bbox[1]),0)

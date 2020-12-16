@@ -8,13 +8,13 @@ import json
 import os
 
 # Loading jsons, directories need to be replaced aptly
-with open('../raw/test/combined_test_converted.json', 'r') as f:
+with open('../ToolJson/test.json', 'r') as f:
     test_data = json.load(f)
 
-with open('../raw/train/combined_train_converted.json', 'r') as f:
+with open('../ToolJson/train.json', 'r') as f:
     train_data = json.load(f)
 
-with open('../raw/train_val/combined_val_converted.json', 'r') as f:
+with open('../ToolJson/val.json', 'r') as f:
     train_val_data = json.load(f)
 
 session_state = SessionState.get(name='', counter=None)
@@ -36,10 +36,12 @@ def filter_json(value, session_state):
 def filter_component(value,data,session_state):
     new_data = []
 
+    # print(data[0].keys())
+
     for i in range(len(data)):
-        if data[i]['label'] == value:
+        if data[i]['label'][0] == value:
             new_data.append(data[i])
-    
+    print(new_data)
     return new_data
 
 
@@ -53,7 +55,7 @@ def update_image_info(data):
         info = data[counter]
         
         # Picking a random image from data, extracting location
-        image_directory = data[counter]['image_url'][22:]
+        image_directory = data[counter]['image_url'][0][14:]
         image_directory = image_directory.replace("%20"," ")
 
         # Finding image path. To be replaced with server directiory
@@ -101,6 +103,9 @@ else:
 
     info, image_path = update_image_info(json_selected)
 
+    print(info)
+    print(image_path)
+
 
     if(info != 'null'):
         # st.title('Image list')
@@ -112,12 +117,12 @@ else:
 
         fig,label = image_list.app(image_path,info,gt_pts,gt_mask)
         
-        st.write(label)
+        st.write(label[0])
         st.plotly_chart(fig)
 
     else:
         st.title('Image not found')
 
 
-    if(info == 'null'):
-        st.title('Select an option')
+    # if(info == 'null'):
+    #     st.title('Select an option')
