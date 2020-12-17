@@ -7,8 +7,9 @@ import numpy as np
 import json
 import os
 
-# Loading jsons, directories need to be replaced aptly
-with open('../ToolJson/test.json', 'r') as f:
+# Loading jsons, directories need to be replaced aptly.
+# replace test with train after.
+with open('../ToolJson/train.json', 'r') as f:
     test_data = json.load(f)
 
 with open('../ToolJson/train.json', 'r') as f:
@@ -41,7 +42,7 @@ def filter_component(value,data,session_state):
     for i in range(len(data)):
         if data[i]['label'][0] == value:
             new_data.append(data[i])
-    print(new_data)
+    #print(new_data)
     return new_data
 
 
@@ -67,6 +68,16 @@ def update_image_info(data):
 
     return info, image_path
 
+def sort_data(data,inp):
+    if inp=='iou':
+        data = sorted(data,key=lambda k: k['iou'],reverse=True)
+    elif inp=='iou-asc':
+        data = sorted(data,key=lambda k: k['iou'])
+    elif inp=='hd':
+        data = sorted(data,key=lambda k: k['hd'],reverse=True)
+    elif inp=='hd-asc':
+        data = sorted(data,key=lambda k: k['hd'])
+    return data
 
 
 # Sidebar elements
@@ -99,12 +110,20 @@ if json_selected == 'null':
     st.title('Select an option')
 
 else:
+    sort_by = st.sidebar.selectbox(
+        'Sort by (none, iou, hd)',
+        ('None','iou','iou-asc','hd','hd-asc')
+    )
+
+
     json_selected = filter_component(component_selector,json_selected,session_state)
+    json_selected = sort_data(json_selected,sort_by)
 
     info, image_path = update_image_info(json_selected)
 
-    print(info)
-    print(image_path)
+    #print(info)
+    #print(image_path)
+
 
 
     if(info != 'null'):
@@ -112,13 +131,19 @@ else:
         # c1,c2 = st.beta_columns(2)
         
         st.sidebar.write('\nSelect outputs to show')
-        gt_pts = st.sidebar.checkbox("GT-points")
-        gt_mask = st.sidebar.checkbox("GT-mask")
-
-        fig,label = image_list.app(image_path,info,gt_pts,gt_mask)
+        gt_pts = st.sidebar.checkbox("GT-points (blue)")
+        gt_mask = st.sidebar.checkbox("GT-mask (pink)")
+        en_output = st.sidebar.checkbox("Encoder+contourization (green)")
+        mcnn_mask = st.sidebar.checkbox("MCNN mask (yellow)")
+        gcn_output = st.sidebar.checkbox("GCN output (red)")
+    
+        fig,label,iou,hd = image_list.app(image_path,info,gt_pts,gt_mask,en_output,mcnn_mask,gcn_output)
         
         st.write(label[0])
         st.plotly_chart(fig)
+
+        st.write("IOU: "+str(iou))
+        st.write("HD: "+str(hd))
 
     else:
         st.title('Image not found')
