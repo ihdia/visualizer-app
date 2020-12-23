@@ -41,33 +41,35 @@ def app(image_path,info,gt_pts,gt_mask,en_output_checkbox,mcnn_checkbox,gcn_outp
     # print(encoder_pts)
 
     image = cv.cvtColor(image,cv.COLOR_RGB2BGR)
+
+
     
-    if(gt_pts):
-        image = cv.polylines(image,[pts],True,(0, 0, 255),1)
+    # if(gt_pts):
+    #     image = cv.polylines(image,[pts],True,(0, 0, 255),1)
         
-        #for p in pts:
-            #cv.circle(image,tuple(p),2,(255,255,0))
+    #     #for p in pts:
+    #         #cv.circle(image,tuple(p),2,(255,255,0))
 
-    if(gt_mask):
-        overlay = image.copy()
-        overlay = cv.fillPoly(overlay,[pts],color=(255,20,147))
+    # if(gt_mask):
+    #     overlay = image.copy()
+    #     overlay = cv.fillPoly(overlay,[pts],color=(255,20,147))
 
-        alpha = 0.3
-        image = cv.addWeighted(overlay,alpha,image,1-alpha,0)
+    #     alpha = 0.3
+    #     image = cv.addWeighted(overlay,alpha,image,1-alpha,0)
 
-    if(en_output_checkbox):
-        image = cv.polylines(image,np.int32(np.array([encoder_pts])),True,(0, 200, 0),1)
+    # if(en_output_checkbox):
+    #     image = cv.polylines(image,np.int32(np.array([encoder_pts])),True,(0, 200, 0),1)
     
-    if(mcnn_checkbox):
-        overlay = image.copy()
-        overlay = cv.fillPoly(overlay,np.int32(np.array([encoder_pts])),color=(255,255,0))
+    # if(mcnn_checkbox):
+    #     overlay = image.copy()
+    #     overlay = cv.fillPoly(overlay,np.int32(np.array([encoder_pts])),color=(255,255,0))
 
-        alpha = 0.3
-        image = cv.addWeighted(overlay,alpha,image,1-alpha,0)
+    #     alpha = 0.3
+    #     image = cv.addWeighted(overlay,alpha,image,1-alpha,0)
 
     
-    if(gcn_output_checkbox):
-        image = cv.polylines(image,np.int32(np.array([gcn_pts])),True,(255, 0, 0),1)
+    # if(gcn_output_checkbox):
+    #     image = cv.polylines(image,np.int32(np.array([gcn_pts])),True,(255, 0, 0),1)
 
 
     
@@ -76,6 +78,9 @@ def app(image_path,info,gt_pts,gt_mask,en_output_checkbox,mcnn_checkbox,gcn_outp
     fig = go.Figure(go.Image(z=image))
     fig.update_xaxes(showticklabels=False)
     fig.update_yaxes(showticklabels=False)
+
+    if(gt_pts):
+        fig.add_trace(go.Scatter(x=np.take(pts,0,axis=1),y=np.take(pts,1,axis=1),fill="toself"))
 
     
 

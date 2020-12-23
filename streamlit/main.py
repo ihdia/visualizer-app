@@ -6,20 +6,26 @@ import streamlit as st
 import numpy as np
 import json
 import os
+from copy import deepcopy
 
 # Loading jsons, directories need to be replaced aptly.
 # replace test with train after.
-with open('../ToolJson/train.json', 'r') as f:
-    test_data = json.load(f)
 
-with open('../ToolJson/train.json', 'r') as f:
-    train_data = json.load(f)
+@st.cache(allow_output_mutation=True)
+def get_json_data():
+    with open('../ToolJson/train.json', 'r') as f:
+        test_data = json.load(f)
 
-with open('../ToolJson/val.json', 'r') as f:
-    train_val_data = json.load(f)
+    with open('../ToolJson/train.json', 'r') as f:
+        train_data = json.load(f)
 
+    with open('../ToolJson/val.json', 'r') as f:
+        train_val_data = json.load(f)
+    
+    return test_data,train_data,train_val_data
+
+test_data,train_data,train_val_data = get_json_data()
 session_state = SessionState.get(name='', counter=None)
-
 
 def filter_json(value, session_state):
     if(value == 'Train'):
@@ -34,6 +40,7 @@ def filter_json(value, session_state):
 
     return data
 
+#@st.cache()
 def filter_component(value,data,session_state):
     new_data = []
 
