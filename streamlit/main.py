@@ -40,13 +40,12 @@ def filter_json(value, session_state):
 
     return data
 
-#@st.cache()
 def filter_component(value,data,session_state):
     new_data = []
 
     # print(data[0].keys())
 
-    for i in range(len(data)):
+    for i in range(100):
         if data[i]['label'][0] == value:
             new_data.append(data[i])
     #print(new_data)
@@ -136,17 +135,9 @@ else:
     if(info != 'null'):
         # st.title('Image list')
         # c1,c2 = st.beta_columns(2)
-        
-        st.sidebar.write('\nSelect outputs to show')
-        gt_pts = st.sidebar.checkbox("GT-points (blue)")
-        gt_mask = st.sidebar.checkbox("GT-mask (pink)")
-        en_output = st.sidebar.checkbox("Encoder+contourization (green)")
-        mcnn_mask = st.sidebar.checkbox("MCNN mask (yellow)")
-        gcn_output = st.sidebar.checkbox("GCN output (red)")
     
-        fig,label,iou,hd = image_list.app(image_path,info,gt_pts,gt_mask,en_output,mcnn_mask,gcn_output)
-        
-        st.write(label[0])
+        fig,label,iou,hd = image_list.app(image_path,info)
+    
         st.plotly_chart(fig)
 
         st.write("IOU: "+str(iou))
@@ -154,7 +145,3 @@ else:
 
     else:
         st.title('Image not found')
-
-
-    # if(info == 'null'):
-    #     st.title('Select an option')
