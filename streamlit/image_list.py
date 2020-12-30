@@ -66,19 +66,34 @@ def app(image_path,info):
     )
 
 
-    # Constants
+    # Regular zoom
     img_width = 1600
     img_height = 900
     scale_factor = 0.5
+
+
+
 
     fig = go.Figure()
 
 
     actual_height, actual_width, _ = image.shape
-    x_zoom = (np.take(pts,0,axis=1) * img_width * scale_factor / actual_width)
-    y_zoom = img_height * scale_factor - (np.take(pts,1,axis=1) * img_height * scale_factor / actual_height)
+    if(actual_width / actual_height < 20):
+        x_zoom = (np.take(pts,0,axis=1) * img_width * scale_factor / actual_width)
+        y_zoom = img_height * scale_factor - (np.take(pts,1,axis=1) * img_height * scale_factor / actual_height)
+        x_axis_range = img_width * scale_factor
+        y_axis_range = img_height * scale_factor
+    else:
 
-    print(x_zoom, y_zoom)
+        # Regular zoom
+        img_width = 3000
+        img_height = 600
+        scale_factor = 0.5
+
+        x_zoom = (np.take(pts,0,axis=1) * img_width * scale_factor / actual_width)
+        y_zoom = img_height * scale_factor - (np.take(pts,1,axis=1) * img_height * scale_factor / actual_height)
+        x_axis_range = img_width * scale_factor
+        y_axis_range = img_height * scale_factor
 
 
     fig.add_trace(go.Scatter(x=np.take(pts,0,axis=1) * img_width * scale_factor / actual_width,y=np.take(pts,1,axis=1) * img_height * scale_factor / actual_height,line_color='blue',name="GT-pts",visible='legendonly'))    
@@ -91,12 +106,12 @@ def app(image_path,info):
     # Configure axes
     fig.update_xaxes(
         visible=False,
-        range=[0, img_width * scale_factor]
+        range=[0, x_axis_range]
     )
     
     fig.update_yaxes(
         visible=False,
-        range=[0, img_height * scale_factor],
+        range=[0, y_axis_range],
         # the scaleanchor attribute ensures that the aspect ratio stays constant
         scaleanchor="x"
     )
