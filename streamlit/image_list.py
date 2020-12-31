@@ -81,26 +81,40 @@ def app(image_path,info):
     if(actual_width / actual_height < 20):
         x_zoom = (np.take(pts,0,axis=1) * img_width * scale_factor / actual_width)
         y_zoom = img_height * scale_factor - (np.take(pts,1,axis=1) * img_height * scale_factor / actual_height)
+
+        x_zoom_encoder = np.take(encoder_pts,0,axis=1) * img_width * scale_factor / actual_width
+        y_zoom_encoder = img_height * scale_factor - (np.take(encoder_pts,1,axis=1) * img_height * scale_factor / actual_height)
+
+        x_zoom_gcn = np.take(gcn_pts,0,axis=1) * img_width * scale_factor / actual_width
+        y_zoom_gcn = img_height * scale_factor - (np.take(gcn_pts,1,axis=1) * img_height * scale_factor / actual_height)
+
         x_axis_range = img_width * scale_factor
         y_axis_range = img_height * scale_factor
     else:
 
-        # Regular zoom
+        # Special zoom
         img_width = 3000
         img_height = 600
         scale_factor = 0.5
 
         x_zoom = (np.take(pts,0,axis=1) * img_width * scale_factor / actual_width)
         y_zoom = img_height * scale_factor - (np.take(pts,1,axis=1) * img_height * scale_factor / actual_height)
+        
+        x_zoom_encoder = np.take(encoder_pts,0,axis=1) * img_width * scale_factor / actual_width
+        y_zoom_encoder = img_height * scale_factor - (np.take(encoder_pts,1,axis=1) * img_height * scale_factor / actual_height)
+
+        x_zoom_gcn = np.take(gcn_pts,0,axis=1) * img_width * scale_factor / actual_width
+        y_zoom_gcn = img_height * scale_factor - (np.take(gcn_pts,1,axis=1) * img_height * scale_factor / actual_height)
+
         x_axis_range = img_width * scale_factor
         y_axis_range = img_height * scale_factor
 
 
     fig.add_trace(go.Scatter(x=np.take(pts,0,axis=1) * img_width * scale_factor / actual_width,y=np.take(pts,1,axis=1) * img_height * scale_factor / actual_height,line_color='blue',name="GT-pts",visible='legendonly'))    
     fig.add_trace(go.Scatter(x = x_zoom,y = y_zoom,fill="toself",mode='none',name="GT-mask",fillcolor='rgba(128,0,128,0.3)',visible='legendonly'))
-    fig.add_trace(go.Scatter(x=np.take(encoder_pts,0,axis=1),y=np.take(encoder_pts,1,axis=1),line_color='green',name='encoder output',visible='legendonly'))
-    fig.add_trace(go.Scatter(x=np.take(encoder_pts,0,axis=1),y=np.take(encoder_pts,1,axis=1),fill="toself",mode='none',name="MCNN-mask",fillcolor='rgba(255,255,0,0.3)',visible='legendonly'))
-    fig.add_trace(go.Scatter(x=np.take(gcn_pts,0,axis=1),y=np.take(gcn_pts,1,axis=1),line_color='red',name='GCN output',visible='legendonly'))
+    fig.add_trace(go.Scatter(x=x_zoom_encoder,y=y_zoom_encoder,line_color='green',name='encoder output',visible='legendonly'))
+    fig.add_trace(go.Scatter(x=x_zoom_encoder,y=y_zoom_encoder,fill="toself",mode='none',name="MCNN-mask",fillcolor='rgba(255,255,0,0.3)',visible='legendonly'))
+    fig.add_trace(go.Scatter(x=x_zoom_gcn,y=y_zoom_gcn,line_color='red',name='GCN output',visible='legendonly'))
 
 
     # Configure axes
