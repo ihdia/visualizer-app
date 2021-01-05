@@ -87,9 +87,9 @@ def sort_data(data,inp):
 
 
 # Sidebar elements
-st.sidebar.title('Select Image')
-image_selector = st.sidebar.radio('Image Type', ['None', 'Train', 'Test', 'Validation'])
-component_selector = st.sidebar.selectbox(
+st.title('Select Image')
+image_selector = st.radio('Image Type', ['None', 'Train', 'Test', 'Validation'])
+component_selector = st.selectbox(
     'Select component type ',
     ('Character Component','Page Boundary','Character Line Segment','Boundary Line','Physical Degradation',
     'Library Marker','Picture / Decorator')
@@ -101,7 +101,7 @@ component_selector = st.sidebar.selectbox(
 # if st.sidebar.button('Next'):
 #     session_state.counter += 1
 
-c1,c2 = st.sidebar.beta_columns(2)
+c1,c2 = st.beta_columns(2)
 p = c1.button('Prev')
 n = c2.button('Next')
 
@@ -116,7 +116,7 @@ if json_selected == 'null':
     st.title('Select an option')
 
 else:
-    sort_by = st.sidebar.selectbox(
+    sort_by = st.selectbox(
         'Sort by (none, iou, hd)',
         ('None','iou','iou-asc','hd','hd-asc')
     )
