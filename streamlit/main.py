@@ -43,12 +43,9 @@ def filter_json(value, session_state):
 def filter_component(value,data,session_state):
     new_data = []
 
-    # print(data[0].keys())
-
-    for i in range(100):
+    for i in range(len(data)):
         if data[i]['label'][0] == value:
             new_data.append(data[i])
-    #print(new_data)
     return new_data
 
 
@@ -61,13 +58,10 @@ def update_image_info(data):
     if(counter > 0 and len(data) > counter):
         info = data[counter]
         
-        # Picking a random image from data, extracting location
         image_directory = data[counter]['image_url'][0][14:]
         image_directory = image_directory.replace("%20"," ")
-
-        # Finding image path. To be replaced with server directiory
         image_path = '../new_jpg_data' + image_directory
-        print(image_path)
+
     else:
         return 'null', 'null'
 
@@ -85,30 +79,13 @@ def sort_data(data,inp):
         data = sorted(data,key=lambda k: k['hd'])
     return data
 
-
-# Sidebar elements
-st.title('Select Image')
+st.title('Layer Visualizer')
 image_selector = st.radio('Image Type', ['None', 'Train', 'Test', 'Validation'])
 component_selector = st.selectbox(
     'Select component type ',
     ('Character Component','Page Boundary','Character Line Segment','Boundary Line','Physical Degradation',
     'Library Marker','Picture / Decorator')
 )
-
-
-# if st.sidebar.button('Prev'):
-#     session_state.counter -= 1
-# if st.sidebar.button('Next'):
-#     session_state.counter += 1
-
-c1,c2 = st.beta_columns(2)
-p = c1.button('Prev')
-n = c2.button('Next')
-
-if p:
-    session_state.counter -= 1
-if n:
-    session_state.counter += 1
 
 json_selected = filter_json(image_selector, session_state)
 
@@ -120,22 +97,18 @@ else:
         'Sort by (none, iou, hd)',
         ('None','iou','iou-asc','hd','hd-asc')
     )
-
-
+    
     json_selected = filter_component(component_selector,json_selected,session_state)
     json_selected = sort_data(json_selected,sort_by)
 
+    print(len(json_selected))
+
     info, image_path = update_image_info(json_selected)
-
-    #print(info)
-    #print(image_path)
+    print(image_path)
 
 
 
-    if(info != 'null'):
-        # st.title('Image list')
-        # c1,c2 = st.beta_columns(2)
-    
+    if(info != 'null'):    
         fig,label,iou,hd = image_list.app(image_path,info)
     
         st.plotly_chart(fig)
@@ -145,3 +118,13 @@ else:
 
     else:
         st.title('Image not found')
+
+
+c1,c2 = st.beta_columns(2)
+p = c1.button('Prev')
+n = c2.button('Next')
+
+if p:
+    session_state.counter -= 1
+if n:
+    session_state.counter += 1
