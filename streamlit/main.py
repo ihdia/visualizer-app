@@ -70,20 +70,17 @@ def update_image_info(data):
 
 def sort_data(data,inp):
     if inp=='iou':
-        data = sorted(data,key=lambda k: k['iou'],reverse=True)
-    elif inp=='iou-asc':
-        data = sorted(data,key=lambda k: k['iou'])
+        data = sorted(data,key=lambda k: k['iou'],reverse=False)
     elif inp=='hd':
         data = sorted(data,key=lambda k: k['hd'],reverse=True)
-    elif inp=='hd-asc':
-        data = sorted(data,key=lambda k: k['hd'])
+    
     return data
 
 st.title('Layer Visualizer')
-image_selector = st.radio('Image Type', ['None', 'Train', 'Test', 'Validation'])
+image_selector = st.radio('Image Type', ['Train', 'Test', 'Validation'])
 component_selector = st.selectbox(
     'Select component type ',
-    ('Character Component','Page Boundary','Character Line Segment','Boundary Line','Physical Degradation',
+    ('Character Line Segment','Character Component','Page Boundary','Boundary Line','Physical Degradation',
     'Library Marker','Picture / Decorator')
 )
 
@@ -94,14 +91,16 @@ if json_selected == 'null':
 
 else:
     sort_by = st.selectbox(
-        'Sort by (none, iou, hd)',
-        ('None','iou','iou-asc','hd','hd-asc')
+        'Sort by (iou, hd)',
+        ('iou','hd')
     )
     
     json_selected = filter_component(component_selector,json_selected,session_state)
     json_selected = sort_data(json_selected,sort_by)
 
-    print(len(json_selected))
+    # print(len(json_selected))
+
+    session_state.counter = st.slider("Select image",min_value=1,max_value=len(json_selected)-1)
 
     info, image_path = update_image_info(json_selected)
     print(image_path)

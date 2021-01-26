@@ -76,16 +76,17 @@ def app(image_path,info):
         img_height = actual_height
         scale_factor = 3
     
-    elif(actual_width / actual_height < 15):
+    elif(actual_width / actual_height < 15 and not label[0] == "Character Line Segment"):
         img_width = 1600
         img_height = 900
         scale_factor = 0.5
         
-    else:
+    # else:
+    elif label[0] == "Character Line Segment":
 
         # Special zoom
         img_width = 1300
-        img_height = 150
+        img_height = 200
         scale_factor = 1
 
     # print(np.take(pts,0,axis=1) * img_width * scale_factor / actual_width)
@@ -102,7 +103,7 @@ def app(image_path,info):
     y_axis_range = img_height * scale_factor
 
     fig.add_trace(go.Scatter(x = x_zoom,y = y_zoom,line_color='blue',name="GT-line",visible='legendonly'))
-    fig.add_trace(go.Scatter(x = x_zoom,y = y_zoom,name="GT-pts",visible='legendonly',mode='markers',marker_color='rgb(100,180,220)'))    
+    fig.add_trace(go.Scatter(x = x_zoom,y = y_zoom,name="GT-pts",visible='legendonly',mode='markers',marker_color='rgb(0,180,255)'))    
     fig.add_trace(go.Scatter(x = x_zoom,y = y_zoom,fill="toself",mode='none',name="GT-mask",fillcolor='rgba(128,0,128,0.3)',visible='legendonly'))
     fig.add_trace(go.Scatter(x= x_zoom_encoder,y=y_zoom_encoder,line_color='green',name='encoder output',visible='legendonly'))
     fig.add_trace(go.Scatter(x= x_zoom_encoder,y=y_zoom_encoder,name='encoder pts',visible='legendonly',mode='markers',marker_color='rgba(0,255,0,1)'))
@@ -145,6 +146,14 @@ def app(image_path,info):
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
     )
 
-    fig.update_layout(legend_x = 0,legend_y=0)
+    # fig.update_layout(legend_x = 0,legend_y=0)
+    fig.update_layout(legend=dict(
+        orientation="h",
+        # xanchor="center",
+        yanchor="top",
+        y=-0.1, 
+        x=0   
+    ))
+
     
     return fig,label,iou,hd
