@@ -21,11 +21,10 @@ def get_json_data():
 
     with open('../ToolJson/val.json', 'r') as f:
         train_val_data = json.load(f)
-    
     return test_data,train_data,train_val_data
 
+session_state = SessionState.get(name="",counter=1,counter2=1)
 test_data,train_data,train_val_data = get_json_data()
-session_state = SessionState.get(name='', counter=None)
 
 def filter_json(value, session_state):
     if(value == 'Train'):
@@ -35,9 +34,9 @@ def filter_json(value, session_state):
     elif(value == 'Validation'):
         data = train_val_data
     else:
-        session_state.counter = 1
         return 'null'
 
+    # session_state.counter = 1
     return data
 
 def filter_component(value,data,session_state):
@@ -51,9 +50,6 @@ def filter_component(value,data,session_state):
 
 
 def update_image_info(data):
-
-    counter = session_state.counter
-
 
     if(counter > 0 and len(data) > counter):
         info = data[counter]
@@ -86,44 +82,53 @@ component_selector = st.selectbox(
 
 json_selected = filter_json(image_selector, session_state)
 
-if json_selected == 'null':
-    st.title('Select an option')
+# if json_selected == 'null':
+#     st.title('Select an option')
+
+# else:
+sort_by = st.selectbox(
+    'Sort by (iou, hd)',
+    ('iou','hd')
+)
+
+json_selected = filter_component(component_selector,json_selected,session_state)
+json_selected = sort_data(json_selected,sort_by)
+
+# c1,c2 = st.beta_columns(2)
+
+# p = c1.button('Prev')
+# n = c2.button('Next')
+
+# if p:
+#     session_state.counter -= 1
+
+# if n:
+#     session_state.counter += 1
+
+print("top: ",session_state.counter)
+# print("top: ",session_state.counter2)
+
+sl = st.empty()
+session_state.counter = sl.slider("Select image",1,len(json_selected)-1,session_state.counter)
+# session_state.counter = session_state.counter2
+
+counter = session_state.counter
+
+info, image_path = update_image_info(json_selected)
+print(image_path)
+
+
+
+if(info != 'null'):    
+    fig,label,iou,hd = image_list.app(image_path,info)
+
+    st.plotly_chart(fig)
+
+    st.write("IOU: "+str(iou))
+    st.write("HD: "+str(hd))
 
 else:
-    sort_by = st.selectbox(
-        'Sort by (iou, hd)',
-        ('iou','hd')
-    )
-    
-    json_selected = filter_component(component_selector,json_selected,session_state)
-    json_selected = sort_data(json_selected,sort_by)
+    st.title('Image not found')
 
-    # print(len(json_selected))
-
-    session_state.counter = st.slider("Select image",min_value=1,max_value=len(json_selected)-1)
-
-    info, image_path = update_image_info(json_selected)
-    print(image_path)
-
-
-
-    if(info != 'null'):    
-        fig,label,iou,hd = image_list.app(image_path,info)
-    
-        st.plotly_chart(fig)
-
-        st.write("IOU: "+str(iou))
-        st.write("HD: "+str(hd))
-
-    else:
-        st.title('Image not found')
-
-
-c1,c2 = st.beta_columns(2)
-p = c1.button('Prev')
-n = c2.button('Next')
-
-if p:
-    session_state.counter -= 1
-if n:
-    session_state.counter += 1
+print("bottom: ",session_state.counter)
+# print("bottom: ",session_state.counter2)
