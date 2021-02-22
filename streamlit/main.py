@@ -23,10 +23,10 @@ def get_json_data():
         train_val_data = json.load(f)
     return test_data,train_data,train_val_data
 
-session_state = SessionState.get(name="",counter=1,counter2=1)
+state = SessionState._get_state()
 test_data,train_data,train_val_data = get_json_data()
 
-def filter_json(value, session_state):
+def filter_json(value):
     if(value == 'Train'):
         data = train_data
     elif(value == 'Test'):
@@ -36,10 +36,9 @@ def filter_json(value, session_state):
     else:
         return 'null'
 
-    # session_state.counter = 1
     return data
 
-def filter_component(value,data,session_state):
+def filter_component(value,data):
     new_data = []
 
     for i in range(len(data)):
@@ -51,10 +50,10 @@ def filter_component(value,data,session_state):
 
 def update_image_info(data):
 
-    if(counter > 0 and len(data) > counter):
-        info = data[counter]
+    if(state.counter > 0 and len(data) > state.counter):
+        info = data[state.counter]
         
-        image_directory = data[counter]['image_url'][0][14:]
+        image_directory = data[state.counter]['image_url'][0][14:]
         image_directory = image_directory.replace("%20"," ")
         image_path = '../new_jpg_data' + image_directory
 
@@ -80,7 +79,7 @@ component_selector = st.selectbox(
     'Library Marker','Picture / Decorator')
 )
 
-json_selected = filter_json(image_selector, session_state)
+json_selected = filter_json(image_selector)
 
 # if json_selected == 'null':
 #     st.title('Select an option')
@@ -91,28 +90,13 @@ sort_by = st.selectbox(
     ('iou','hd')
 )
 
-json_selected = filter_component(component_selector,json_selected,session_state)
+json_selected = filter_component(component_selector,json_selected)
 json_selected = sort_data(json_selected,sort_by)
 
-# c1,c2 = st.beta_columns(2)
-
-# p = c1.button('Prev')
-# n = c2.button('Next')
-
-# if p:
-#     session_state.counter -= 1
-
-# if n:
-#     session_state.counter += 1
-
-print("top: ",session_state.counter)
-# print("top: ",session_state.counter2)
 
 sl = st.empty()
-session_state.counter = sl.slider("Select image",1,len(json_selected)-1,session_state.counter)
-# session_state.counter = session_state.counter2
+state.counter = sl.slider("Select image",1,len(json_selected)-1,state.counter)
 
-counter = session_state.counter
 
 info, image_path = update_image_info(json_selected)
 print(image_path)
@@ -130,5 +114,16 @@ if(info != 'null'):
 else:
     st.title('Image not found')
 
-print("bottom: ",session_state.counter)
-# print("bottom: ",session_state.counter2)
+
+c1,c2 = st.beta_columns(2)
+
+p = c1.button('Prev')
+n = c2.button('Next')
+
+if p:
+    state.counter -= 1
+
+if n:
+    state.counter += 1
+
+state.sync()
