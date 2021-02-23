@@ -1,0 +1,7 @@
+
+../new_jpg_data/Bhoomi_data/images/ANTODATTA LAKSHANAM/KUML/2346/8.jpg	iou: 0.6187	hd: 35.171	Train	index: 700
+
+../new_jpg_data/Bhoomi_data/images/SAPTA LAKSHANAM/ASRM/468/10.jpg	iou: 0.2891	hd: 128.4718	Validation	index: 1
+
+../new_jpg_data/Bhoomi_data/images/SAPTA LAKSHANAM/ASRM/468/10.jpg	iou: 0.2907	hd: 101.4938	Validation	index: 2
+

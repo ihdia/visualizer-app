@@ -1,1 +1,1 @@
-streamlit run streamlit/main.py
+streamlit run streamlit/main.py &
