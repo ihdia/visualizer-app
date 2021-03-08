@@ -19,6 +19,9 @@ def get_json_data():
 
     with open('../ToolJson/val.json', 'r') as f:
         train_val_data = json.load(f)
+    
+    state.bookmarks = []
+    state.counter = 0
     return test_data,train_data,train_val_data
 
 
@@ -28,7 +31,7 @@ state = SessionState._get_state()
 test_data,train_data,train_val_data = get_json_data()
 
 
-# Filters data based on user selection (Test, Train, Validation)
+# Filters data based on user selection (Test, Train, Validation,Bookmarks)
 
 def filter_json(value):
     if(value == 'Train'):
@@ -37,8 +40,10 @@ def filter_json(value):
         data = test_data
     elif(value == 'Validation'):
         data = train_val_data
-    else:
-        return 'null'
+    elif(value == 'Bookmarks'):
+        data = state.bookmarks
+    # else:
+    #     return 'null'
 
     return data
 
@@ -51,6 +56,7 @@ def filter_component(value,data):
     for i in range(len(data)):
         if data[i]['label'][0] == value:
             new_data.append(data[i])
+
     return new_data
 
 
@@ -58,7 +64,7 @@ def filter_component(value,data):
 
 def update_image_info(data):
 
-    if(state.counter > 0 and len(data) > state.counter):
+    if(state.counter >= 0 and len(data) > state.counter):
         info = data[state.counter]
         
         image_directory = data[state.counter]['image_url'][0][14:]
@@ -93,7 +99,12 @@ def save_path(image_path,iou,hd,ttv,index):
 # MAIN APP LAYOUT
 
 st.title('Layer Visualizer')
-image_selector = st.radio('Image Type', ['Train', 'Test', 'Validation'])
+dataset = ['Train', 'Test', 'Validation']
+
+if len(state.bookmarks) > 0:
+    dataset.append('Bookmarks')
+
+image_selector = st.radio('Image Type', dataset)
 
 component_selector = st.selectbox(
     'Select component type ',
@@ -115,7 +126,14 @@ json_selected = sort_data(json_selected,sort_by)
 # Index selection 
 
 sl = st.empty()
-state.counter = sl.slider("Select image",1,len(json_selected)-1,state.counter)
+if(state.counter > len(json_selected)-1):
+    state.counter = 0
+
+if len(json_selected)-1 > 0:
+    state.counter = sl.slider("Select image",0,len(json_selected)-1,state.counter)
+
+else:
+    state.counter = 0
 
 c1,c2 = st.beta_columns(2)
 
@@ -129,7 +147,7 @@ if n:
     state.counter += 1
 
 ind = int(st.text_input("Enter index value here: ",state.counter))
-if ind and ind in range(1,len(json_selected)):
+if ind and ind in range(0,len(json_selected)):
     state.counter = ind
 
 
@@ -152,5 +170,8 @@ else:
 if st.button("Save for later"):
     save_path(image_path,iou,hd,image_selector,state.counter)
 
+if st.button("Bookmark current image"):
+    state.bookmarks.append(json_selected[state.counter])
+    # print(len(state.bookmarks))
 
-state.sync()        # Essential to avoid widget rollbacks after page refresh 
+state.sync()
