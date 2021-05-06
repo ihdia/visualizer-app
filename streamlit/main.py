@@ -1,4 +1,5 @@
 import image_list
+import PlotImage
 import SessionState
 
 import streamlit as st
@@ -9,7 +10,9 @@ from copy import deepcopy
 
 # TODO : replace test back to test data from train data
 
-@st.cache(allow_output_mutation=True)
+print(os.system("pwd"))
+
+# @st.cache(allow_output_mutation=True)
 def get_json_data():
     with open('../ToolJson/train.json', 'r') as f:
         test_data = json.load(f)
@@ -17,7 +20,7 @@ def get_json_data():
     with open('../ToolJson/train.json', 'r') as f:
         train_data = json.load(f)
 
-    with open('../ToolJson/val.json', 'r') as f:
+    with open('../ToolJson/train.json', 'r') as f:
         train_val_data = json.load(f)
     
     state.bookmarks = []
@@ -157,7 +160,8 @@ info, image_path = update_image_info(json_selected)
 # print(image_path)
 
 if(info != 'null'):    
-    fig,label,iou,hd = image_list.app(image_path,info)
+    img = PlotImage.BNetImage(image_path,info)
+    fig,label,iou,hd = img.RenderImage()
 
     st.plotly_chart(fig)
 
