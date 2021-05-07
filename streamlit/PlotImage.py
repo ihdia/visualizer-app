@@ -1,7 +1,6 @@
 import streamlit as st
 import cv2 as cv
 from PIL import Image
-
 import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
@@ -41,14 +40,15 @@ class BNetImage:
 
         if x0 - 6 > 0 and y0-2 > 0:    
             self.image = self.image[y0-2:y0+h+2,x0-6:x0+w+6]
-            self.pts[:,0] = self.pts[:,0] + 6
-            self.pts[:,1] = self.pts[:,1] + 2
-            # encoder_pts[:,0] += 6
-            # encoder_pts[:,1] += 2
-            self.bbox[2] = self.bbox[2] + 12
-            self.bbox[3] = self.bbox[3] + 4
-            w = w + 12
-            h = h + 4
+            self.pts[:,0] += 6
+            self.pts[:,1] +=  2
+            self.encoder_pts[:,0] += 6
+            self.encoder_pts[:,1] += 2
+            self.bbox[2] += 12
+            self.bbox[3] += 4
+            w += 12
+            h += 4
+            
         else:
             self.image = self.image[y0:y0+h,x0:x0+w]
 
