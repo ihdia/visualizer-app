@@ -10,9 +10,11 @@ from copy import deepcopy
 
 # TODO : replace test back to test data from train data
 
-print(os.system("pwd"))
+# Gets current state of app, so that session variables such as counter are preserved after the app restarts
 
-# @st.cache(allow_output_mutation=True)
+state = SessionState._get_state()
+
+@st.cache(allow_output_mutation=True)
 def get_json_data():
     with open('../ToolJson/train.json', 'r') as f:
         test_data = json.load(f)
@@ -23,16 +25,15 @@ def get_json_data():
     with open('../ToolJson/train.json', 'r') as f:
         train_val_data = json.load(f)
     
-    state.bookmarks = []
-    state.counter = 0
     return test_data,train_data,train_val_data
 
-
-# Gets current state of app, so that session variables such as counter are preserved after the app restarts
-
-state = SessionState._get_state()
 test_data,train_data,train_val_data = get_json_data()
 
+if state.bookmarks is None:
+    state.bookmarks = []
+
+if state.counter is None:
+    state.counter = 0
 
 # Filters data based on user selection (Test, Train, Validation,Bookmarks)
 
